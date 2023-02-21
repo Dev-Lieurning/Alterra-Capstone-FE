@@ -6,10 +6,56 @@ import {
   PhoneAndroid,
   Publish,
 } from "@material-ui/icons";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
+import { updateUser } from "../../redux/apiCalls";
 import "./user.css";
 
 export default function User() {
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const userId = location.pathname.split("/")[2] ? location.pathname.split("/")[2] : 0 ;
+  const user = useSelector((state) => state.user.users.find((user) => user.id === Number(userId)));
+
+  const [file, setFile] = useState([]);
+  const [inputs, setInputs] = useState({});
+
+  const handleFiles = (e) => {
+    let files = [];
+    let valueFiles = e.target.files;
+    for(let i = 0; i < valueFiles.length; i++) {
+      files.push({
+        files: e.target.files[i]
+      });
+    }
+    setFile(files);
+  }
+
+  const handleChange = (e) => {
+    setInputs((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('id', user.id);
+      formData.append('name', inputs.name || user.name);
+      formData.append('email', inputs.email || user.email);
+      formData.append('phone', inputs.phone || user.phone);
+      formData.append('address', inputs.address || user.address);
+      for(let i in file) {
+        formData.append('files', file[i].files);
+      }      
+      updateUser(user.id, formData, dispatch)
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
   return (
     <div className="user">
       <div className="userTitleContainer">
@@ -22,20 +68,20 @@ export default function User() {
         <div className="userShow">
           <div className="userShowTop">
             <img
-              src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+              src={user.image? user.image : ""}
               alt=""
               className="userShowImg"
             />
             <div className="userShowTopTitle">
-              <span className="userShowUsername">Anna Becker</span>
-              <span className="userShowUserTitle">Software Engineer</span>
+              <span className="userShowUsername">{user.name}</span>
+              {/* <span className="userShowUserTitle">Software Engineer</span> */}
             </div>
           </div>
           <div className="userShowBottom">
             <span className="userShowTitle">Account Details</span>
             <div className="userShowInfo">
               <PermIdentity className="userShowIcon" />
-              <span className="userShowInfoTitle">annabeck99</span>
+              <span className="userShowInfoTitle">{user.name}</span>
             </div>
             <div className="userShowInfo">
               <CalendarToday className="userShowIcon" />
@@ -44,15 +90,15 @@ export default function User() {
             <span className="userShowTitle">Contact Details</span>
             <div className="userShowInfo">
               <PhoneAndroid className="userShowIcon" />
-              <span className="userShowInfoTitle">+1 123 456 67</span>
+              <span className="userShowInfoTitle">{user.phone}</span>
             </div>
             <div className="userShowInfo">
               <MailOutline className="userShowIcon" />
-              <span className="userShowInfoTitle">annabeck99@gmail.com</span>
+              <span className="userShowInfoTitle">{user.email}</span>
             </div>
             <div className="userShowInfo">
               <LocationSearching className="userShowIcon" />
-              <span className="userShowInfoTitle">New York | USA</span>
+              <span className="userShowInfoTitle">{user.address}</span>
             </div>
           </div>
         </div>
@@ -60,60 +106,68 @@ export default function User() {
           <span className="userUpdateTitle">Edit</span>
           <form className="userUpdateForm">
             <div className="userUpdateLeft">
-              <div className="userUpdateItem">
+              {/* <div className="userUpdateItem">
                 <label>Username</label>
                 <input
                   type="text"
-                  placeholder="annabeck99"
+                  placeholder={user.name}
                   className="userUpdateInput"
                 />
-              </div>
+              </div> */}
               <div className="userUpdateItem">
                 <label>Full Name</label>
                 <input
                   type="text"
-                  placeholder="Anna Becker"
+                  placeholder={user.name}
                   className="userUpdateInput"
+                  name="name"
+                  onChange={handleChange}
                 />
               </div>
               <div className="userUpdateItem">
                 <label>Email</label>
                 <input
                   type="text"
-                  placeholder="annabeck99@gmail.com"
+                  placeholder={user.email}
                   className="userUpdateInput"
+                  name="email"
+                  onChange={handleChange}
                 />
               </div>
               <div className="userUpdateItem">
                 <label>Phone</label>
                 <input
                   type="text"
-                  placeholder="+1 123 456 67"
+                  placeholder={user.phone}
                   className="userUpdateInput"
+                  name="phone"
+                  onChange={handleChange}
                 />
               </div>
               <div className="userUpdateItem">
                 <label>Address</label>
                 <input
                   type="text"
-                  placeholder="New York | USA"
+                  placeholder={user.address}
                   className="userUpdateInput"
+                  name="address"
+                  onChange={handleChange}
                 />
               </div>
             </div>
             <div className="userUpdateRight">
               <div className="userUpdateUpload">
-                <img
+                {/* <img
                   className="userUpdateImg"
-                  src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+                  src={user.image}
                   alt=""
-                />
+                /> */}
                 <label htmlFor="file">
                   <Publish className="userUpdateIcon" />
                 </label>
-                <input type="file" id="file" style={{ display: "none" }} />
+                <input type="file" id="file" onChange={handleFiles}/>
               </div>
-              <button className="userUpdateButton">Update</button>
+              <button className="userUpdateButton" onClick={handleUpdate}>Update</button>
             </div>
           </form>
         </div>

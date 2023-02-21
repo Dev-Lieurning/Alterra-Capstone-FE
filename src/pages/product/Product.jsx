@@ -155,7 +155,6 @@ export default function Product() {
       //   data: formData,
       //   headers: { "Content-Type": "multipart/form-data" },
       // });
-      console.log(`masuk wey`)
       updateProduct(product.id, formData, dispatch)
 
       // history.push(`/products`);
