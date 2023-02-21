@@ -1,4 +1,20 @@
-import { loginFailure, loginStart, loginSuccess } from "./userRedux";
+import { 
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  getUserStart,
+  getUserSuccess,
+  getUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+  addUserStart,
+  addUserSuccess,
+  addUserFailure,
+} from "./userRedux";
 import {
   createDatawithPicture,
   publicRequest,
@@ -31,7 +47,63 @@ export const login = async (dispatch, user) => {
     alert("Error" + JSON.stringify(err));
   }
 };
+//USERS
+export const getUsers = async (dispatch) => {
+  dispatch(getUserStart());
+  try {
+    const res = await publicRequest.get("/user/getAllUsers");
+    dispatch(getUserSuccess(res.data.data));
+  } catch (err) {
+    dispatch(getUserFailure());
+  }
+};
 
+export const deleteUser = async (id, dispatch) => {
+  dispatch(deleteUserStart());
+  try {
+    await userRequest.delete(`/user/deleteUser/${id}`);
+    Swal.fire(
+      'Deleted!',
+      'User has been deleted',
+      'success'
+    )
+    dispatch(deleteUserSuccess(id));
+  } catch (err) {
+    dispatch(deleteUserFailure());
+  }
+};
+
+export const updateUser = async (id, user, dispatch) => {
+  dispatch(updateUserStart());
+  try {
+    const res = await createDatawithPicture.put('/user/updateUser', user)
+    Swal.fire(
+      'Updated!',
+      'User has been updated',
+      'success'
+    )
+    
+    dispatch(updateUserSuccess({ id, user: res.data.data }));
+  } catch (err) {
+    dispatch(updateUserFailure());
+  }
+};
+export const addUser = async (user, dispatch) => {
+  dispatch(addUserStart());
+  try {
+    const res = await createDatawithPicture.post('/user/addUser', user);
+    Swal.fire(
+      'Saved',
+      'User has been Added',
+      'success'
+    )
+    dispatch(addUserSuccess(res.data.data));
+  } catch (err) {
+    dispatch(addUserFailure());
+  }
+}
+
+//PRODUCTS
 export const getProducts = async (dispatch) => {
   dispatch(getProductStart());
   try {
@@ -45,7 +117,7 @@ export const getProducts = async (dispatch) => {
 export const deleteProduct = async (id, dispatch) => {
   dispatch(deleteProductStart());
   try {
-    const res = await userRequest.delete(`/room/deleteRoom/${id}`);
+    await userRequest.delete(`/room/deleteRoom/${id}`);
     Swal.fire(
       'Deleted!',
       'Room has been deleted',
@@ -84,7 +156,5 @@ export const addProduct = async (product, dispatch) => {
     dispatch(addProductSuccess(res.data.data));
   } catch (err) {
     dispatch(addProductFailure());
-    // alert(err);
-    console.log(JSON.stringify(err));
   }
 };

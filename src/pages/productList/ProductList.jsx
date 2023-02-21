@@ -58,7 +58,7 @@ export default function ProductList() {
           <div className="productListItem">
             <img
               className="productListImg"
-              src={params.row.link}
+              src={params.row.image[0].link}
               alt=""
             />
             {params.row.name}
