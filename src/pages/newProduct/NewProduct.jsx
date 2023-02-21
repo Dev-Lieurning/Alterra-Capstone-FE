@@ -42,7 +42,6 @@ export default function NewProduct() {
     for(let i in file) {
       formData.append('files', file[i].files);
     }
-
     addProduct(formData, dispatch);
   };
 
