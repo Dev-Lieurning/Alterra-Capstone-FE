@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 export default function NewProduct() {
   const [inputs, setInputs] = useState({});
   const [file, setFile] = useState([]);
-  const [cat, setCat] = useState([]);
+  // const [cat, setCat] = useState([]);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -25,9 +25,9 @@ export default function NewProduct() {
     setFile(files);
   }
   
-  const handleCat = (e) => {
-    setCat(e.target.value.split(","));
-  };
+  // const handleCat = (e) => {
+  //   setCat(e.target.value.split(","));
+  // };
 
   const handleClick = (e) => {
     e.preventDefault();
