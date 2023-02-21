@@ -1,23 +1,71 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, Redirect, useHistory, useLocation } from "react-router-dom";
 import "./product.css";
 import Chart from "../../components/chart/Chart";
 import { productData } from "../../dummyData";
-import { Publish } from "@material-ui/icons";
-import { useSelector } from "react-redux";
+import { DeleteOutline, Publish } from "@material-ui/icons";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
 import { userRequest } from "../../requestMethods";
+import { DataGrid, useGridApiRef } from "@material-ui/data-grid";
+import axios from "axios";
+import { updateProduct } from "../../redux/apiCalls";
 
 export default function Product() {
   const location = useLocation();
+  const dispatch = useDispatch();
   const productId = location.pathname.split("/")[2]
     ? location.pathname.split("/")[2]
     : 1;
-  console.log(productId);
+
   const [pStats, setPStats] = useState([]);
+
+  const [images, setImage] = useState([]);
+  const [deleteImages, setDeleteImage] = useState([]);
+  const [file, setFile] = useState([]);
+  const [inputs, setInputs] = useState({});
+
   const product = useSelector((state) =>
     state.product.products.find((product) => product.id == productId)
   );
 
+  const history = useHistory();
+  const columns = [
+    { field: "id", headerName: "ID", width: 100 },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 600,
+      
+      renderCell: (params) => {
+        return (
+          <div className="productImg">
+            <img
+              className="productImg"
+              src={params.row.link || ''}
+              alt=""
+            />
+          </div>
+        );
+      },
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <>
+            <DeleteOutline
+              className="productListDelete"
+              onClick={() => handleDeleteImage(params.row.id)}
+            />
+          </>
+        );
+      },
+    },
+  ];
+
+  
   const MONTHS = useMemo(
     () => [
       "Jan",
@@ -35,6 +83,10 @@ export default function Product() {
     ],
     []
   );
+
+  useEffect(() => {
+    setImage(product.image);
+  }, [])
 
   // useEffect(() => {
   //   const getStats = async () => {
@@ -56,6 +108,63 @@ export default function Product() {
   //   getStats();
   // }, [productId, MONTHS]);
 
+  const handleDeleteImage = (id) => {
+    const updImage = images.filter(image => image.id !== id);
+    setDeleteImage([...deleteImages, id]);
+    setImage(updImage);
+  }
+
+  const handleFiles = (e) => {
+    let files = [];
+    let valueFiles = e.target.files;
+    for(let i = 0; i < valueFiles.length; i++) {
+      files.push({
+        files: e.target.files[i]
+      });
+    }
+    setFile(files);
+  }
+
+  const handleChange = (e) => {
+    setInputs((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('id', product.id);
+      formData.append('name', inputs.name || product.name);
+      formData.append('type', inputs.type || product.type);
+      formData.append('price', inputs.price || product.price);
+      formData.append('location', inputs.location || product.location);
+      formData.append('max_guest', inputs.max_guest || product.max_guest);
+      formData.append('description', inputs.description || product.description);
+      for(let i in file) {
+        formData.append('files', file[i].files);
+      }
+      for(let i in deleteImages) {
+        formData.append('deleteFiles', deleteImages[i]);
+      }
+  
+      // const res = await axios({
+      //   method: "PUT",
+      //   url: "https://api.capstone-meeting.online/room/updateRoom",
+      //   data: formData,
+      //   headers: { "Content-Type": "multipart/form-data" },
+      // });
+      console.log(`masuk wey`)
+      updateProduct(product.id, formData, dispatch)
+
+      // history.push(`/products`);
+
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
   return (
     <div className="product">
       <div className="productTitleContainer">
@@ -71,7 +180,7 @@ export default function Product() {
         <div className="productTopRight">
           <div className="productInfoTop">
             <img
-              src={product.image[0].link}
+              src={product.image[0]?.link || ''}
               alt=""
               className="productInfoImg"
             />
@@ -93,36 +202,53 @@ export default function Product() {
         <form className="productForm">
           <div className="productFormLeft">
             <label>Product Name</label>
-            <input type="text" placeholder={product.name} />
+            <input name="name" type="text" placeholder={product.name} onChange={handleChange} />
             <label>Type</label>
-            <input type="text" placeholder={product.type} />
+            <input name="type" type="text" placeholder={product.type} onChange={handleChange} />
             <label>Price</label>
-            <input type="text" placeholder={product.price} />
+            <input name="price" type="text" placeholder={product.price} onChange={handleChange} />
             <label>Location</label>
-            <input type="text" placeholder={product.location} />
+            <input name="location" type="text" placeholder={product.location} onChange={handleChange} />
             <label>Capacity</label>
-            <input type="text" placeholder={product.max_guest} />
+            <input name="max_guest" type="text" placeholder={product.max_guest} onChange={handleChange} />
             <label>Description</label>
-            <input type="textarea" placeholder={product.description} />
+            <input name="description" type="textarea" placeholder={product.description} onChange={handleChange} />
             <label>Available</label>
             <select name="inStock" id="idStock">
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
+            <div className="addProductItem">
+              <label>Image</label>
+            <input type="file" name="filesImage" onChange={handleFiles} multiple />
+        </div>
           </div>
           <div className="productFormRight">
-            <div className="productUpload">
-              <img
-                src={product.image[0].link}
-                alt=""
-                className="productUploadImg"
-              />
-              <label for="file">
-                <Publish />
-              </label>
-              <input type="file" id="file" style={{ display: "none" }} />
-            </div>
-            <button className="productButton">Update</button>
+            <DataGrid
+              rows={images}
+              rowHeight={200}
+              disableSelectionOnClick
+              columns={columns}
+              getRowId={(row) => row.id}
+              pageSize={8}
+            />
+              {/* {product.image.map((image) => {
+                return (
+                <div className="productUpload">
+                  <img
+                    src={image.link}
+                    alt=""
+                    className="productUploadImg"
+                  />
+                  <label for="file">
+                    <Publish />
+                  </label>
+                  <input type="file" id="file" style={{ display: "none" }} />
+                </div>
+                )
+              })} */}
+            
+            <button className="productButton" onClick = {handleUpdate}>Update</button>
           </div>
         </form>
       </div>

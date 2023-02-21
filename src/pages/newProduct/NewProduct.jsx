@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 
 export default function NewProduct() {
   const [inputs, setInputs] = useState({});
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState([]);
   const [cat, setCat] = useState([]);
   const dispatch = useDispatch();
 
@@ -14,6 +14,17 @@ export default function NewProduct() {
       return { ...prev, [e.target.name]: e.target.value };
     });
   };
+
+  const handleFiles = (e) => {
+    let files = [];
+    for(let i = 0; i < e.target.files.length; i++) {
+      files.push({
+        files: e.target.files[i]
+      });
+    }
+    setFile(files);
+  }
+  
   const handleCat = (e) => {
     setCat(e.target.value.split(","));
   };
@@ -21,25 +32,19 @@ export default function NewProduct() {
   const handleClick = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("data", { ...inputs });
-    // const files = e.currentTarget.files;
-    // for (let i = 0; i < files.length; i++) {
-    //   formData.append("files", files[i]);
-    // }
-    // const product = formData;
-    const product = { ...inputs };
-    addProduct(product, dispatch);
-    alert(JSON.stringify(formData));
-    console.log(formData);
-  };
 
-  //  "id": 1,
-  //         "name": "Kepingski",
-  //         "type": "Luxury",
-  //         "price": 5000000,
-  //         "location": "Jakarta",
-  //         "max_guest": 50,
-  //         "description": "deskripsi meeting room",
+    formData.append('name', inputs.name || '');
+    formData.append('type', inputs.type || '');
+    formData.append('price', inputs.price || 0);
+    formData.append('location', inputs.location || '');
+    formData.append('max_guest', inputs.max_guest || 0);
+    formData.append('description', inputs.description || '');
+    for(let i in file) {
+      formData.append('files', file[i].files);
+    }
+
+    addProduct(formData, dispatch);
+  };
 
   return (
     <div className="newProduct">
@@ -47,7 +52,7 @@ export default function NewProduct() {
       <form className="addProductForm" encType="multipart/form-data">
         <div className="addProductItem">
           <label>Image</label>
-          <input type="file" name="files" onChange={handleChange} multiple />
+          <input type="file" name="files" onChange={handleFiles} multiple />
         </div>
         <div className="addProductItem">
           <label>Name</label>
@@ -97,7 +102,7 @@ export default function NewProduct() {
         <div className="addProductItem">
           <label>Description</label>
           <input
-            name="max_guest"
+            name="description"
             type="textarea"
             placeholder="100"
             onChange={handleChange}

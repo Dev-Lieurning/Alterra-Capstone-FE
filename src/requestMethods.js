@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://553f-103-195-58-17.ap.ngrok.io";
+const BASE_URL = "https://api.capstone-meeting.online";
 // const TOKEN = JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
 //   .currentUser.accessToken;
 // const TOKEN = "JOKO";

@@ -58,7 +58,7 @@ export default function ProductList() {
           <div className="productListItem">
             <img
               className="productListImg"
-              src="https://capstone-project-reservation-room.s3.ap-northeast-1.amazonaws.com/1676560996619_QIPjjtJyOi0muydAdY3n2CjPljgHjTpi.dDYyoGW.jpeg"
+              src={params.row.link}
               alt=""
             />
             {params.row.name}
@@ -104,6 +104,12 @@ export default function ProductList() {
 
   return (
     <div className="productList">
+      <div className="productTitleContainer">
+        <h1 className="productTitle">Product</h1>
+        <Link to="/newproduct">
+          <button className="productAddButton">Create</button>
+        </Link>
+      </div>
       <DataGrid
         rows={products}
         disableSelectionOnClick

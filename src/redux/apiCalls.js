@@ -18,7 +18,7 @@ import {
   addProductStart,
   addProductSuccess,
 } from "./productRedux";
-import axios from "axios";
+import Swal from 'sweetalert2';
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -37,7 +37,6 @@ export const getProducts = async (dispatch) => {
   try {
     const res = await publicRequest.get("/room/getAllRooms");
     dispatch(getProductSuccess(res.data.data));
-    console.log("Ini respon" + JSON.stringify(res.data.data));
   } catch (err) {
     dispatch(getProductFailure());
   }
@@ -47,7 +46,11 @@ export const deleteProduct = async (id, dispatch) => {
   dispatch(deleteProductStart());
   try {
     const res = await userRequest.delete(`/room/deleteRoom/${id}`);
-    alert(id);
+    Swal.fire(
+      'Deleted!',
+      'Room has been deleted',
+      'success'
+    )
     dispatch(deleteProductSuccess(id));
   } catch (err) {
     dispatch(deleteProductFailure());
@@ -57,8 +60,14 @@ export const deleteProduct = async (id, dispatch) => {
 export const updateProduct = async (id, product, dispatch) => {
   dispatch(updateProductStart());
   try {
-    // update
-    dispatch(updateProductSuccess({ id, product }));
+    const res = await createDatawithPicture.put('/room/updateRoom', product)
+    Swal.fire(
+      'Updated!',
+      'Room has been updated',
+      'success'
+    )
+    
+    dispatch(updateProductSuccess({ id, product: res.data.data }));
   } catch (err) {
     dispatch(updateProductFailure());
   }
@@ -66,13 +75,13 @@ export const updateProduct = async (id, product, dispatch) => {
 export const addProduct = async (product, dispatch) => {
   dispatch(addProductStart());
   try {
-    const res = await axios({
-      method: "post",
-      url: "https://553f-103-195-58-17.ap.ngrok.io/room/addRoom",
-      data: product,
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    dispatch(addProductSuccess(res.data));
+    const res = await createDatawithPicture.post('/room/addRoom', product);
+    Swal.fire(
+      'Saved',
+      'Room has been Added',
+      'success'
+    )
+    dispatch(addProductSuccess(res.data.data));
   } catch (err) {
     dispatch(addProductFailure());
     // alert(err);

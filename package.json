@@ -2,6 +2,9 @@
   "name": "lamaadmin",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "14"
+  },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/data-grid": "^4.0.0-alpha.29",
@@ -19,6 +22,7 @@
     "react-scripts": "4.0.3",
     "recharts": "^2.0.9",
     "redux-persist": "^6.0.0",
+    "sweetalert2": "^11.7.2",
     "timeago.js": "^4.0.2",
     "web-vitals": "^1.0.1"
   },
