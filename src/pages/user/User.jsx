@@ -6,7 +6,6 @@ import {
   PhoneAndroid,
   Publish,
 } from "@material-ui/icons";
-import axios from "axios";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
@@ -46,18 +45,16 @@ export default function User() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://34.239.112.166:8080/auth/login", {username: "admin_isan", password: "admin"})
-      console.log(res)
-      // const formData = new FormData();
-      // formData.append('id', user.id);
-      // formData.append('name', inputs.name || user.name);
-      // formData.append('email', inputs.email || user.email);
-      // formData.append('phone', inputs.phone || user.phone);
-      // formData.append('address', inputs.address || user.address);
-      // for(let i in file) {
-      //   formData.append('files', file[i].files);
-      // }
-      // updateUser(user.id, formData, dispatch)
+      const formData = new FormData();
+      formData.append('id', user.id);
+      formData.append('name', inputs.name || user.name);
+      formData.append('email', inputs.email || user.email);
+      formData.append('phone', inputs.phone || user.phone);
+      formData.append('address', inputs.address || user.address);
+      for(let i in file) {
+        formData.append('files', file[i].files);
+      }
+      updateUser(user.id, formData, dispatch)
     } catch (error) {
       console.log(error);
     }
