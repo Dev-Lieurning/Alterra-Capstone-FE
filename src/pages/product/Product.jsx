@@ -24,7 +24,7 @@ export default function Product() {
     state.product.products.find((product) => product.id === Number(productId))
   );
 
-  const columns = [
+  const columns = [ 
     { field: "id", headerName: "ID", width: 100 },
     {
       field: "name",
