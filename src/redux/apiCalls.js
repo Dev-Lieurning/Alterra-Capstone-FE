@@ -36,22 +36,21 @@ import {
 } from "./productRedux";
 import Swal from 'sweetalert2';
 
-export const login = async (dispatch, user) => {
+export const login = async (user, dispatch) => {
   dispatch(loginStart());
   try {
     const res = await publicRequest.post("/auth/login", user);
     dispatch(loginSuccess(res.data.data));
-    alert("kamu masuk" + res.data.data);
   } catch (err) {
+    console.log(err)
     dispatch(loginFailure());
-    alert("Error" + JSON.stringify(err));
   }
 };
 //USERS
 export const getUsers = async (dispatch) => {
   dispatch(getUserStart());
   try {
-    const res = await publicRequest.get("/user/getAllUsers");
+    const res = await userRequest.get("/user/getAllUsers");
     dispatch(getUserSuccess(res.data.data));
   } catch (err) {
     dispatch(getUserFailure());

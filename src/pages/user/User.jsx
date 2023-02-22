@@ -15,8 +15,12 @@ import "./user.css";
 export default function User() {
   const location = useLocation();
   const dispatch = useDispatch();
-  const userId = location.pathname.split("/")[2] ? location.pathname.split("/")[2] : 0 ;
-  const user = useSelector((state) => state.user.users.find((user) => user.id === Number(userId)));
+  const userId = location.pathname.split("/")[2]
+    ? location.pathname.split("/")[2]
+    : 0;
+  const user = useSelector((state) =>
+    state.user.users.find((user) => user.id === Number(userId))
+  );
 
   const [file, setFile] = useState([]);
   const [inputs, setInputs] = useState({});
@@ -24,13 +28,13 @@ export default function User() {
   const handleFiles = (e) => {
     let files = [];
     let valueFiles = e.target.files;
-    for(let i = 0; i < valueFiles.length; i++) {
+    for (let i = 0; i < valueFiles.length; i++) {
       files.push({
-        files: e.target.files[i]
+        files: e.target.files[i],
       });
     }
     setFile(files);
-  }
+  };
 
   const handleChange = (e) => {
     setInputs((prev) => {
@@ -49,10 +53,10 @@ export default function User() {
       formData.append('address', inputs.address || user.address);
       for(let i in file) {
         formData.append('files', file[i].files);
-      }      
+      }
       updateUser(user.id, formData, dispatch)
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -68,7 +72,7 @@ export default function User() {
         <div className="userShow">
           <div className="userShowTop">
             <img
-              src={user.image? user.image : ""}
+              src={user.image ? user.image : ""}
               alt=""
               className="userShowImg"
             />
@@ -165,9 +169,11 @@ export default function User() {
                 <label htmlFor="file">
                   <Publish className="userUpdateIcon" />
                 </label>
-                <input type="file" id="file" onChange={handleFiles}/>
+                <input type="file" id="file" onChange={handleFiles} />
               </div>
-              <button className="userUpdateButton" onClick={handleUpdate}>Update</button>
+              <button className="userUpdateButton" onClick={handleUpdate}>
+                Update
+              </button>
             </div>
           </form>
         </div>
