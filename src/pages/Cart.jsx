@@ -308,7 +308,12 @@ const Cart = () => {
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>IDR {cart.total}</SummaryItemPrice>
             </SummaryItem>
-            <Button onClick={handlaPay}>PAY NOW</Button>
+            <Button
+              onClick={handlaPay}
+              disabled={status === "PAID" ? true : false}
+            >
+              PAY NOW
+            </Button>
           </Summary>
         </Bottom>
       </Wrapper>

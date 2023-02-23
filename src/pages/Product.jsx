@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import { reservationSuccess } from "../redux/reservationRedux";
+import ccyFormat from "../utils/RupiahFormater";
+const { beforeToday } = DateRangePicker;
 
 const Container = styled.div``;
 
@@ -47,9 +49,14 @@ const Desc = styled.p`
   margin: 20px 0px;
 `;
 
-const Price = styled.span`
+const Price = styled.div`
   font-weight: 100;
-  font-size: 40px;
+  font-size: 30px;
+`;
+
+const TotalPrice = styled.div`
+  font-weight: 100;
+  font-size: 35px;
 `;
 
 const FilterContainer = styled.div`
@@ -151,10 +158,16 @@ const Product = () => {
   }, [id, startDate, quantity, user]);
 
   const handleQuantity = (type) => {
-    if (type === "dec") {
-      quantity > 1 && setQuantity(quantity - 1);
+    if (type >= product.max_guest) {
+      quantity = product.max_guest;
+    } else if (type < 0) {
+      quantity = 0;
     } else {
-      setQuantity(quantity + 1);
+      if (type === "dec") {
+        quantity > 1 && setQuantity(quantity - 1);
+      } else {
+        setQuantity(quantity + 1);
+      }
     }
   };
 
@@ -217,7 +230,10 @@ const Product = () => {
         <InfoContainer>
           <Title>{product.name}</Title>
           <Desc>{product.description}</Desc>
-          <Price>IDR {product.price}</Price>
+          <Price>IDR {ccyFormat(product.price)}/pax</Price>
+          <TotalPrice>
+            Total: IDR {ccyFormat(product.price * quantity)}
+          </TotalPrice>
           <FilterContainer>
             <Filter>
               <FilterTitle>Capacity:{product.max_guest}</FilterTitle>
@@ -240,10 +256,10 @@ const Product = () => {
           >
             <DateRangePicker
               format="yyyy-MM-dd HH:mm:ss"
-              defaultCalendarValue={[
-                new Date("2022-02-01 00:00:00"),
-                new Date("2022-05-01 23:59:59"),
-              ]}
+              // defaultCalendarValue={[
+
+              // ]}
+              disabledDate={beforeToday()}
               onOk={dateOnChange}
               style={{ width: 250, paddingBottom: 10 }}
               placeholder="Select Date Range"
