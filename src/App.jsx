@@ -20,26 +20,32 @@ const App = () => {
     <Router>
       <Switch>
         <Route exact path="/">
+          {user ? <Redirect to="/products" /> : <Login />}
           <Home />
         </Route>
         <Route path="/products/:category">
+          {user ? <Redirect to="/products:category" /> : <Login />}
           <ProductList />
         </Route>
         <Route path="/products">
+          {user ? <Redirect to="/products" /> : <Login />}
           <ProductList />
         </Route>
         <Route path="/product/:id">
+          {user ? <Redirect to="/product/:id" /> : <Login />}
           <Product />
         </Route>
         <Route path="/cart">
+          {user ? <Redirect to="/cart" /> : <Login />}
           <Cart />
         </Route>
         <Route path="/success">
+          {user ? <Redirect to="/success" /> : <Login />}
           <Success />
         </Route>
         <Route path="/login">{user ? <Redirect to="/" /> : <Login />}</Route>
         <Route path="/register">
-          {user ? <Redirect to="/" /> : <Register />}
+          {user ? <Redirect to="/login" /> : <Register />}
         </Route>
       </Switch>
     </Router>

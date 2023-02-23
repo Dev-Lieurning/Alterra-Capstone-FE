@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { login } from "../redux/apiCalls";
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import JwtDecoder from "../utils/JwtDecoder";
 
 const Container = styled.div`
   width: 100vw;
@@ -75,12 +76,12 @@ const Login = () => {
   const dispatch = useDispatch();
   const { isFetching, error } = useSelector((state) => state.user);
   const user = useSelector((state) => state.user.isLogedIn);
+  let jwt = useSelector((state) => state.user.currentUser);
 
-  console.log(user);
-
-  const handleClick = (e) => {
+  const handleClick = (e, tot) => {
     e.preventDefault();
     login(dispatch, { email, password });
+    console.log(jwt);
   };
   return (
     <Container>

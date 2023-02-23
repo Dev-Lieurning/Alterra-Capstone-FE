@@ -6,8 +6,8 @@ export const login = async (dispatch, user) => {
   dispatch(loginStart());
   try {
     const res = await publicRequest.post("/auth/login", user);
-    dispatch(loginSuccess(res.data.data.token));
-    console.log("Success" + JSON.stringify(res.data.data.token));
+    const payload = JSON.parse(atob(res.data.data.token.split(".")[1]));
+    dispatch(loginSuccess({ ...payload, token: res.data.data.token }));
   } catch (err) {
     dispatch(loginFailure());
     console.log("Error" + JSON.stringify(err));

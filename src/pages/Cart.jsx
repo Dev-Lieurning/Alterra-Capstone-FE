@@ -256,10 +256,10 @@ const Cart = () => {
                     IDR {product.price * cart.quantity}
                   </ProductPrice>
                 </PriceDetail>
-                <DeleteOutline
+                {/* <DeleteOutline
                   className="productListDelete"
                   // onClick={() => handleDelete(params.row.id)}
-                />
+                /> */}
               </Product>
             ))}
             <Hr />

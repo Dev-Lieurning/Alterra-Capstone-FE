@@ -7,9 +7,9 @@ import Newsletter from "../components/Newsletter";
 import { mobile } from "../responsive";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 
@@ -129,19 +129,20 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [color, setColor] = useState("");
-  const [size, setSize] = useState("");
   const dispatch = useDispatch();
+  let user = useSelector((state) => state.user.currentUser);
 
   useEffect(() => {
     const getProduct = async () => {
       try {
         const res = await publicRequest.get("/room/getRoom/" + id);
         setProduct(res.data.data);
-      } catch {}
+      } catch (err) {
+        // alert(err);
+      }
     };
     getProduct();
-  }, [id]);
+  }, [id, startDate, quantity, user]);
 
   const handleQuantity = (type) => {
     if (type === "dec") {
@@ -160,8 +161,26 @@ const Product = () => {
     setEndDate(endDate);
   };
 
+  const handleReserve = async () => {
+    try {
+      const res = await userRequest.post("/reservation/addReservation", {
+        id_room: product.id,
+        id_user: user.id_user,
+        number_of_persons: quantity,
+        total_price: quantity * product.price,
+        check_in: startDate,
+        check_out: endDate,
+        status: "status belum dibayar",
+      });
+      console.log("Sukses buat reservasi" + res);
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   const handleClick = () => {
     dispatch(addProduct({ ...product, quantity, startDate, endDate }));
+    handleReserve();
   };
   return (
     <Container>
@@ -181,25 +200,22 @@ const Product = () => {
           <Price>IDR {product.price}</Price>
           <FilterContainer>
             <Filter>
-              <FilterTitle>Attendant</FilterTitle>
-              {product.color?.map((c) => (
-                <FilterColor color={c} key={c} onClick={() => setColor(c)} />
-              ))}
-            </Filter>
-            <Filter>
-              <FilterTitle>Add on</FilterTitle>
-              <FilterSize onChange={(e) => setSize(e.target.value)}>
-                {product.size?.map((s) => (
-                  <FilterSizeOption key={s}>{s}</FilterSizeOption>
-                ))}
-              </FilterSize>
+              <FilterTitle>Capacity:{product.max_guest}</FilterTitle>
             </Filter>
           </FilterContainer>
+          <AddContainer>
+            <AmountContainer>
+              <FilterTitle>Attendant :</FilterTitle>
+              <Remove onClick={() => handleQuantity("dec")} />
+              <Amount>{quantity}</Amount>
+              <Add onClick={() => handleQuantity("inc")} />
+            </AmountContainer>
+          </AddContainer>
           <div
             style={{
               display: "block",
               width: 600,
-              paddingLeft: 30,
+              paddingTop: 10,
             }}
           >
             <DateRangePicker
@@ -213,14 +229,7 @@ const Product = () => {
               placeholder="Select Date Range"
             />
           </div>
-          <AddContainer>
-            <AmountContainer>
-              <Remove onClick={() => handleQuantity("dec")} />
-              <Amount>{quantity}</Amount>
-              <Add onClick={() => handleQuantity("inc")} />
-            </AmountContainer>
-            <Button onClick={handleClick}>ADD TO BOOK</Button>
-          </AddContainer>
+          <Button onClick={handleClick}>ADD TO BOOK</Button>
         </InfoContainer>
       </Wrapper>
       <Newsletter />

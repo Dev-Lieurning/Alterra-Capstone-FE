@@ -1,9 +1,6 @@
 import axios from "axios";
 
 const BASE_URL = "https://api.capstone-meeting.online";
-// const TOKEN =
-//   JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser
-//     .accessToken || "";
 
 const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
 const currentUser = user && JSON.parse(user).data;
@@ -15,5 +12,8 @@ export const publicRequest = axios.create({
 
 export const userRequest = axios.create({
   baseURL: BASE_URL,
-  header: { Authorization: `Bearer ${TOKEN}` },
+  headers: {
+    Authorization:
+      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb3ViYTY3QGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWRfdXNlciI6OCwiaWF0IjoxNjc3MTU3OTM0LCJleHAiOjE2NzcyNDQzMzR9.kaJGmOP3Fih234Xl91s8aR5KikvRNXxGSL1pg2o9cig",
+  },
 });
