@@ -5,7 +5,6 @@ import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
-import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
 import { userRequest } from "../requestMethods";
 import { useHistory } from "react-router";
@@ -165,36 +164,56 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
+  const [status, setStatus] = useState("");
   const cart = useSelector((state) => state.cart);
   const history = useHistory();
   const dispatch = useDispatch();
-
-  // const handlaPay = async () => {
-  //   try {
-  //     const res = await userRequest.post("/payment/checkout", {
-  //       id_reservation: 9,
-  //       amount: 5000000,
-  //     });
-  //     window.open(res.data.data.invoiceUrl);
-  //   } catch (err) {
-  //     alert(err);
-  //   }
-  // };
+  let reservation = useSelector(
+    (state) => state.reservation.currentReservation
+  );
   const handlaPay = async () => {
     try {
-      const res = await axios.post(
-        "https://api.capstone-meeting.online/auth/login",
-        {
-          email: "admin@gmail.com",
-          password: "admin123",
-        }
-      );
-      // window.open(res.data.data.invoiceUrl);
-      console.log("ANJING SAMPE SUBUH" + JSON.stringify(res));
+      const res = await userRequest.post("/payment/checkout", {
+        id_reservation: reservation.id,
+        amount: reservation.total_price,
+      });
+      console.log(res);
+      window.open(res.data.data.invoiceUrl);
+      setStatus(res.data.data.status);
     } catch (err) {
       alert(err);
     }
   };
+
+  const handleStatus = async () => {
+    try {
+      const res = await userRequest.get("/payment/getAllPayments");
+      let paymentstatus = res.data.data;
+      let test = paymentstatus.find(
+        (item) => (item.id_reservation = reservation.id)
+      );
+      window.open(test.receipe);
+      setStatus(test.status);
+    } catch (error) {
+      alert(error);
+    }
+  };
+  // const handlaPay = async () => {
+  //   try {
+  //     const res = await axios.post(
+  //       "https://api.capstone-meeting.online/auth/login",
+  //       {
+  //         email: "admin@gmail.com",
+  //         password: "admin123",
+  //       }
+  //     );
+  //     console.log(reservation);
+  //     // window.open(res.data.data.invoiceUrl);
+  //     console.log("ANJING SAMPE SUBUH" + JSON.stringify(res));
+  //   } catch (err) {
+  //     alert(err);
+  //   }
+  // };
 
   let price = cart.price;
   let quantity = cart.quantity;
@@ -206,7 +225,9 @@ const Cart = () => {
     dispatch(addProductOrder({ price, quantity }));
   };
 
-  useEffect(() => {}, [cart.total, history]);
+  useEffect(() => {
+    handleStatus();
+  }, [cart.total, history]);
   return (
     <Container>
       <Navbar />
@@ -242,7 +263,11 @@ const Cart = () => {
                       <b>Type:</b> {product.type}
                     </ProductSize>
                     <ProductSize>
-                      <b>Date:</b> {product.startDate + product.endDate}
+                      <b>Date:</b>{" "}
+                      {product.startDate + " until " + product.endDate}
+                    </ProductSize>
+                    <ProductSize>
+                      <b>Status:</b> {status}
                     </ProductSize>
                   </Details>
                 </ProductDetail>

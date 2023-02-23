@@ -2,6 +2,7 @@ import { loginFailure, loginStart, loginSuccess } from "./userRedux";
 import { publicRequest } from "../requestMethods";
 import axios from "axios";
 
+//Auth
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
   try {
@@ -13,3 +14,5 @@ export const login = async (dispatch, user) => {
     console.log("Error" + JSON.stringify(err));
   }
 };
+
+//Reservation

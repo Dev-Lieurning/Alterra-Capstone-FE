@@ -12,6 +12,7 @@ import { addProduct } from "../redux/cartRedux";
 import { useDispatch, useSelector } from "react-redux";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
+import { reservationSuccess } from "../redux/reservationRedux";
 
 const Container = styled.div``;
 
@@ -158,21 +159,18 @@ const Product = () => {
   };
 
   function padTo2Digits(num) {
-    return num.toString().padStart(2, '0');
+    return num.toString().padStart(2, "0");
   }
-  
+
   function formatDate(date) {
     return (
       [
         date.getFullYear(),
         padTo2Digits(date.getMonth() + 1),
         padTo2Digits(date.getDate()),
-      ].join('-') +
-      ' ' +
-      [
-        padTo2Digits(date.getHours()),
-        padTo2Digits(date.getMinutes()),
-      ].join(':')
+      ].join("-") +
+      " " +
+      [padTo2Digits(date.getHours()), padTo2Digits(date.getMinutes())].join(":")
     );
   }
 
@@ -194,7 +192,7 @@ const Product = () => {
         check_out: endDate,
         status: "status belum dibayar",
       });
-      
+      dispatch(reservationSuccess(res.data.data));
     } catch (err) {
       console.log(JSON.stringify(err));
     }
