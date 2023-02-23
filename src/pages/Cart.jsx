@@ -272,12 +272,14 @@ const Cart = () => {
                 </ProductDetail>
                 <PriceDetail>
                   <ProductAmountContainer>
-                    <Add onClick={handleAddQty} />
-                    <ProductAmount>{cart.quantity}</ProductAmount>
-                    <Remove onClick={handleSubstractQty} />
+                    {/* <Add onClick={handleAddQty} /> */}
+                    <ProductAmount>
+                      {reservation.number_of_persons} pax
+                    </ProductAmount>
+                    {/* <Remove onClick={handleSubstractQty} /> */}
                   </ProductAmountContainer>
                   <ProductPrice>
-                    IDR {product.price * cart.quantity}
+                    IDR {product.price * reservation.number_of_persons}
                   </ProductPrice>
                 </PriceDetail>
                 {/* <DeleteOutline
