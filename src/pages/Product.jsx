@@ -124,7 +124,7 @@ const Button = styled.button`
 
 const Product = () => {
   const location = useLocation();
-  const id = location.pathname.split("/")[2];
+  const id = location.pathname ? location.pathname.split("/")[2] : 7;
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [startDate, setStartDate] = useState("");
@@ -132,11 +132,16 @@ const Product = () => {
   const dispatch = useDispatch();
   let user = useSelector((state) => state.user.currentUser);
 
+  const user2 = JSON.parse(localStorage.getItem("persist:root"))?.user;
+  // const currentUser = user2 && JSON.parse(user).data;
+  const TOKEN = JSON.parse(user2).currentUser;
+
   useEffect(() => {
     const getProduct = async () => {
       try {
         const res = await publicRequest.get("/room/getRoom/" + id);
         setProduct(res.data.data);
+        console.log(TOKEN);
       } catch (err) {
         // alert(err);
       }
@@ -174,7 +179,7 @@ const Product = () => {
       });
       console.log("Sukses buat reservasi" + res);
     } catch (err) {
-      alert(err);
+      console.log(JSON.stringify(err));
     }
   };
 
