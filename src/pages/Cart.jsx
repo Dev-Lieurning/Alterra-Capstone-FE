@@ -8,9 +8,9 @@ import { mobile } from "../responsive";
 import { useEffect, useState } from "react";
 import { userRequest } from "../requestMethods";
 import { useHistory } from "react-router";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { addProductOrder, substractProductOrder } from "../redux/cartRedux";
-import axios from "axios";
+import ccyFormat from "../utils/RupiahFormater";
 
 const KEY = process.env.REACT_APP_STRIPE;
 
@@ -279,7 +279,7 @@ const Cart = () => {
                     {/* <Remove onClick={handleSubstractQty} /> */}
                   </ProductAmountContainer>
                   <ProductPrice>
-                    IDR {product.price * reservation.number_of_persons}
+                    IDR {ccyFormat(reservation.total_price)}
                   </ProductPrice>
                 </PriceDetail>
                 {/* <DeleteOutline
@@ -294,19 +294,26 @@ const Cart = () => {
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>IDR {cart.total}</SummaryItemPrice>
+              <SummaryItemPrice>
+                IDR {ccyFormat(reservation.total_price)}
+              </SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Cleaning Service</SummaryItemText>
-              <SummaryItemPrice>IDR 5.000</SummaryItemPrice>
+              <SummaryItemPrice>IDR 250.000,00.</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
-              <SummaryItemText>Cleanning Discount</SummaryItemText>
-              <SummaryItemPrice>IDR -5.000</SummaryItemPrice>
+              <SummaryItemText>Discount</SummaryItemText>
+              <SummaryItemPrice>
+                IDR {ccyFormat(reservation.total_price / 10)}
+              </SummaryItemPrice>
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>IDR {cart.total}</SummaryItemPrice>
+              <SummaryItemPrice>
+                IDR{" "}
+                {ccyFormat(cart.total - reservation.total_price / 10 + 250000)}
+              </SummaryItemPrice>
             </SummaryItem>
             <Button
               onClick={handlaPay}

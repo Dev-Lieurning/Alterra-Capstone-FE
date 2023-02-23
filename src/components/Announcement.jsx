@@ -12,7 +12,7 @@ const Container = styled.div`
 `;
 
 const Announcement = () => {
-  return <Container>Super Deal! Free buffet for first 10 book!</Container>;
+  return <Container>Super Deal! Discount10% for all reservation!</Container>;
 };
 
 export default Announcement;
