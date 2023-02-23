@@ -75,13 +75,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const { isFetching, error } = useSelector((state) => state.user);
-  const user = useSelector((state) => state.user.isLogedIn);
-  let jwt = useSelector((state) => state.user.currentUser);
 
   const handleClick = (e, tot) => {
     e.preventDefault();
     login(dispatch, { email, password });
-    console.log(jwt);
   };
   return (
     <Container>

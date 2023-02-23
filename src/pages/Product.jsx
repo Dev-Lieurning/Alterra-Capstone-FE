@@ -157,13 +157,30 @@ const Product = () => {
     }
   };
 
+  function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+  }
+  
+  function formatDate(date) {
+    return (
+      [
+        date.getFullYear(),
+        padTo2Digits(date.getMonth() + 1),
+        padTo2Digits(date.getDate()),
+      ].join('-') +
+      ' ' +
+      [
+        padTo2Digits(date.getHours()),
+        padTo2Digits(date.getMinutes()),
+      ].join(':')
+    );
+  }
+
   const dateOnChange = (date) => {
     const startDate = date[0];
-    console.log("Start Date:", startDate);
-    setStartDate(startDate);
+    setStartDate(formatDate(startDate));
     const endDate = date[1];
-    console.log("End Date:", endDate);
-    setEndDate(endDate);
+    setEndDate(formatDate(endDate));
   };
 
   const handleReserve = async () => {
@@ -177,7 +194,7 @@ const Product = () => {
         check_out: endDate,
         status: "status belum dibayar",
       });
-      console.log("Sukses buat reservasi" + res);
+      
     } catch (err) {
       console.log(JSON.stringify(err));
     }
