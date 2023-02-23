@@ -192,7 +192,6 @@ const Cart = () => {
       let test = paymentstatus.find(
         (item) => (item.id_reservation = reservation.id)
       );
-      window.open(test.receipe);
       setStatus(test.status);
     } catch (error) {
       alert(error);
