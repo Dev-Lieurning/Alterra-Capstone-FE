@@ -181,7 +181,7 @@ const Cart = () => {
       window.open(res.data.data.invoiceUrl);
       setStatus(res.data.data.status);
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   };
 
@@ -194,7 +194,7 @@ const Cart = () => {
       );
       setStatus(test.status);
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
   // const handlaPay = async () => {
@@ -247,7 +247,7 @@ const Cart = () => {
         <Bottom>
           <Info>
             {cart.products.map((product) => (
-              <Product>
+              <Product key={product.id}>
                 <ProductDetail>
                   <Image src={product.image ? product.image[0].link : ""} />
                   <Details>
@@ -300,24 +300,25 @@ const Cart = () => {
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Cleaning Service</SummaryItemText>
-              <SummaryItemPrice>IDR 250.000,00.</SummaryItemPrice>
+              <SummaryItemPrice>
+                - IDR {ccyFormat(reservation.total_price / 40)}
+              </SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Discount</SummaryItemText>
               <SummaryItemPrice>
-                IDR {ccyFormat(reservation.total_price / 10)}
+                + IDR {ccyFormat(reservation.total_price / 40)}
               </SummaryItemPrice>
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>
-                IDR{" "}
-                {ccyFormat(cart.total - reservation.total_price / 10 + 250000)}
+                IDR {ccyFormat(reservation.total_price)}
               </SummaryItemPrice>
             </SummaryItem>
             <Button
               onClick={handlaPay}
-              disabled={status === "PAID" ? true : false}
+              // disabled={status === "PAID" ? true : false}
             >
               PAY NOW
             </Button>

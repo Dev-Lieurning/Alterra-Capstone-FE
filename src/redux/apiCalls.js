@@ -9,6 +9,7 @@ export const login = async (dispatch, user) => {
     const res = await publicRequest.post("/auth/login", user);
     const payload = JSON.parse(atob(res.data.data.token.split(".")[1]));
     dispatch(loginSuccess({ ...payload, token: res.data.data.token }));
+    window.location.reload();
   } catch (err) {
     dispatch(loginFailure());
     console.log("Error" + JSON.stringify(err));

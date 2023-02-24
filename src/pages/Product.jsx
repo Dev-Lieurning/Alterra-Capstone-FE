@@ -14,6 +14,8 @@ import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import { reservationSuccess } from "../redux/reservationRedux";
 import ccyFormat from "../utils/RupiahFormater";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const { beforeToday } = DateRangePicker;
 
 const Container = styled.div``;
@@ -159,6 +161,16 @@ const Product = () => {
 
   const handleQuantity = (type) => {
     if (type >= product.max_guest) {
+      toast("🦄 Wow so easy!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       quantity = product.max_guest;
     } else if (type < 0) {
       quantity = 0;
@@ -206,6 +218,7 @@ const Product = () => {
         status: "status belum dibayar",
       });
       dispatch(reservationSuccess(res.data.data));
+      return {};
     } catch (err) {
       console.log(JSON.stringify(err));
     }
@@ -217,6 +230,20 @@ const Product = () => {
   };
   return (
     <Container>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      {/* Same as */}
+      <ToastContainer />
       <Navbar />
       <Announcement />
       <Wrapper>
